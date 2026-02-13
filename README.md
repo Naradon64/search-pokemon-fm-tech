@@ -1,0 +1,1 @@
+`search-pokemon-fm-tech` is my FM Full Stack Developer test submission, focused on building a Pokemon search web page with Next.js and TypeScript.
