@@ -85,20 +85,31 @@ function HomeContent() {
 
   const pokemon = data?.pokemon ?? null;
 
+  useEffect(() => {
+    if (!hasSearch || loading || error || !pokemon) {
+      return;
+    }
+
+    setRecentSearches((current) => {
+      if (current[0] === normalizedName) {
+        return current;
+      }
+
+      const next = [normalizedName, ...current.filter((item) => item !== normalizedName)].slice(
+        0,
+        RECENT_SEARCHES_LIMIT,
+      );
+      window.localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(next));
+      return next;
+    });
+  }, [error, hasSearch, loading, normalizedName, pokemon]);
+
   const updateSearch = (value: string) => {
     const normalized = value.trim().toLowerCase();
     const params = new URLSearchParams(searchParams.toString());
 
     if (normalized) {
       params.set(SEARCH_PARAM_KEY, normalized);
-      setRecentSearches((current) => {
-        const next = [normalized, ...current.filter((item) => item !== normalized)].slice(
-          0,
-          RECENT_SEARCHES_LIMIT,
-        );
-        window.localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(next));
-        return next;
-      });
     } else {
       params.delete(SEARCH_PARAM_KEY);
     }
