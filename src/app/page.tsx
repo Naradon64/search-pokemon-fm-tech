@@ -123,7 +123,7 @@ function HomeContent() {
           <input
             name="name"
             type="text"
-            placeholder="bulbasaur"
+            placeholder="Type a Pokemon name (e.g., Bulbasaur)"
             value={inputValue}
             onChange={(event) => setInputValue(event.target.value)}
             autoComplete="off"
