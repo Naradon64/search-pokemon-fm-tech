@@ -110,8 +110,7 @@ function HomeContent() {
   return (
     <>
       <section className={styles.box}>
-        <h1>Search Pokemon</h1>
-        <p className={styles.help}>Search by name. URL and result stay in sync.</p>
+        <h1>Search Pokemon by Name</h1>
 
         <form
           className={styles.form}
@@ -150,187 +149,185 @@ function HomeContent() {
         )}
       </section>
 
-      {!hasSearch && (
+      {hasSearch && (
         <section className={styles.box}>
-          <h2>Start by searching a Pokemon name</h2>
-        </section>
-      )}
+          {loading && (
+            <>
+              <h2>Loading</h2>
+              <p className={styles.muted}>Searching for “{normalizedName}”...</p>
+            </>
+          )}
 
-      {hasSearch && loading && (
-        <section className={styles.box}>
-          <h2>Loading</h2>
-          <p className={styles.muted}>Searching for “{normalizedName}”...</p>
-        </section>
-      )}
+          {!loading && error && (
+            <>
+              <h2>Request failed</h2>
+              <p className={styles.muted}>{error.message}</p>
+            </>
+          )}
 
-      {hasSearch && !loading && error && (
-        <section className={styles.box}>
-          <h2>Request failed</h2>
-          <p className={styles.muted}>{error.message}</p>
-        </section>
-      )}
+          {!loading && !error && !pokemon && (
+            <>
+              <h2>Pokemon not found</h2>
+              <p className={styles.muted}>No result for “{normalizedName}”.</p>
+            </>
+          )}
 
-      {hasSearch && !loading && !error && !pokemon && (
-        <section className={styles.box}>
-          <h2>Pokemon not found</h2>
-          <p className={styles.muted}>No result for “{normalizedName}”.</p>
-        </section>
-      )}
-
-      {hasSearch && !loading && !error && pokemon && (
-        <section className={styles.box}>
-          <div className={styles.header}>
-            <div>
-              <p className={styles.number}>#{pokemon.number}</p>
-              <h2>{pokemon.name}</h2>
-              <p className={styles.muted}>{pokemon.classification}</p>
-              <p className={styles.muted}>ID: {pokemon.id}</p>
-              <div className={styles.tags}>
-                {pokemon.types.map((type) => (
-                  <span key={type} className={`${styles.typeBadge} ${getTypeClassName(type)}`}>
-                    {type}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {pokemon.image && (
-              <Image
-                src={pokemon.image}
-                alt={pokemon.name}
-                width={180}
-                height={180}
-                className={styles.image}
-              />
-            )}
-          </div>
-
-          <dl className={styles.grid}>
-            <div>
-              <dt>Max CP</dt>
-              <dd>{pokemon.maxCP}</dd>
-            </div>
-            <div>
-              <dt>Max HP</dt>
-              <dd>{pokemon.maxHP}</dd>
-            </div>
-            <div>
-              <dt>Flee Rate</dt>
-              <dd>
-                {Number.isFinite(pokemon.fleeRate) ? `${Math.round(pokemon.fleeRate * 100)}%` : "-"}
-              </dd>
-            </div>
-            <div>
-              <dt>Height</dt>
-              <dd>
-                {pokemon.height.minimum} - {pokemon.height.maximum}
-              </dd>
-            </div>
-            <div>
-              <dt>Weight</dt>
-              <dd>
-                {pokemon.weight.minimum} - {pokemon.weight.maximum}
-              </dd>
-            </div>
-          </dl>
-
-          <div className={styles.twoColumn}>
-            <section className={`${styles.panel} ${styles.fastPanel}`}>
-              <h3>Fast Attacks</h3>
-              {pokemon.attacks.fast.length === 0 ? (
-                <p className={styles.muted}>No attacks available.</p>
-              ) : (
-                <ul className={styles.list}>
-                  {pokemon.attacks.fast.map((attack) => (
-                    <li key={`fast-${attack.name}-${attack.type}`}>
-                      <strong>{attack.name}</strong>
-                      <span className={styles.attackInfo}>
-                        <span
-                          className={`${styles.typeBadge} ${styles.attackTypeBadge} ${getTypeClassName(attack.type)}`}
-                        >
-                          {attack.type}
-                        </span>
-                        <span className={styles.attackDamage}>DMG {attack.damage}</span>
+          {!loading && !error && pokemon && (
+            <>
+              <div className={styles.header}>
+                <div>
+                  <p className={styles.number}>#{pokemon.number}</p>
+                  <h2>{pokemon.name}</h2>
+                  <p className={styles.muted}>{pokemon.classification}</p>
+                  <p className={styles.muted}>ID: {pokemon.id}</p>
+                  <div className={styles.tags}>
+                    {pokemon.types.map((type) => (
+                      <span key={type} className={`${styles.typeBadge} ${getTypeClassName(type)}`}>
+                        {type}
                       </span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </section>
+                    ))}
+                  </div>
+                </div>
 
-            <section className={`${styles.panel} ${styles.specialPanel}`}>
-              <h3>Special Attacks</h3>
-              {pokemon.attacks.special.length === 0 ? (
-                <p className={styles.muted}>No attacks available.</p>
-              ) : (
-                <ul className={styles.list}>
-                  {pokemon.attacks.special.map((attack) => (
-                    <li key={`special-${attack.name}-${attack.type}`}>
-                      <strong>{attack.name}</strong>
-                      <span className={styles.attackInfo}>
-                        <span
-                          className={`${styles.typeBadge} ${styles.attackTypeBadge} ${getTypeClassName(attack.type)}`}
-                        >
-                          {attack.type}
-                        </span>
-                        <span className={styles.attackDamage}>DMG {attack.damage}</span>
+                {pokemon.image && (
+                  <Image
+                    src={pokemon.image}
+                    alt={pokemon.name}
+                    width={180}
+                    height={180}
+                    className={styles.image}
+                  />
+                )}
+              </div>
+
+              <dl className={styles.grid}>
+                <div>
+                  <dt>Max CP</dt>
+                  <dd>{pokemon.maxCP}</dd>
+                </div>
+                <div>
+                  <dt>Max HP</dt>
+                  <dd>{pokemon.maxHP}</dd>
+                </div>
+                <div>
+                  <dt>Flee Rate</dt>
+                  <dd>
+                    {Number.isFinite(pokemon.fleeRate) ? `${Math.round(pokemon.fleeRate * 100)}%` : "-"}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Height</dt>
+                  <dd>
+                    {pokemon.height.minimum} - {pokemon.height.maximum}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Weight</dt>
+                  <dd>
+                    {pokemon.weight.minimum} - {pokemon.weight.maximum}
+                  </dd>
+                </div>
+              </dl>
+
+              <div className={styles.twoColumn}>
+                <section className={`${styles.panel} ${styles.fastPanel}`}>
+                  <h3>Fast Attacks</h3>
+                  {pokemon.attacks.fast.length === 0 ? (
+                    <p className={styles.muted}>No attacks available.</p>
+                  ) : (
+                    <ul className={styles.list}>
+                      {pokemon.attacks.fast.map((attack) => (
+                        <li key={`fast-${attack.name}-${attack.type}`}>
+                          <strong>{attack.name}</strong>
+                          <span className={styles.attackInfo}>
+                            <span
+                              className={`${styles.typeBadge} ${styles.attackTypeBadge} ${getTypeClassName(attack.type)}`}
+                            >
+                              {attack.type}
+                            </span>
+                            <span className={styles.attackDamage}>DMG {attack.damage}</span>
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
+
+                <section className={`${styles.panel} ${styles.specialPanel}`}>
+                  <h3>Special Attacks</h3>
+                  {pokemon.attacks.special.length === 0 ? (
+                    <p className={styles.muted}>No attacks available.</p>
+                  ) : (
+                    <ul className={styles.list}>
+                      {pokemon.attacks.special.map((attack) => (
+                        <li key={`special-${attack.name}-${attack.type}`}>
+                          <strong>{attack.name}</strong>
+                          <span className={styles.attackInfo}>
+                            <span
+                              className={`${styles.typeBadge} ${styles.attackTypeBadge} ${getTypeClassName(attack.type)}`}
+                            >
+                              {attack.type}
+                            </span>
+                            <span className={styles.attackDamage}>DMG {attack.damage}</span>
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
+              </div>
+
+              <div className={styles.twoColumn}>
+                <section className={`${styles.panel} ${styles.resistantPanel}`}>
+                  <h3>Resistant</h3>
+                  <div className={styles.tags}>
+                    {pokemon.resistant.map((value) => (
+                      <span key={`res-${value}`} className={`${styles.typeBadge} ${getTypeClassName(value)}`}>
+                        {value}
                       </span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </section>
-          </div>
+                    ))}
+                  </div>
+                </section>
 
-          <div className={styles.twoColumn}>
-            <section className={`${styles.panel} ${styles.resistantPanel}`}>
-              <h3>Resistant</h3>
-              <div className={styles.tags}>
-                {pokemon.resistant.map((value) => (
-                  <span key={`res-${value}`} className={`${styles.typeBadge} ${getTypeClassName(value)}`}>
-                    {value}
-                  </span>
-                ))}
+                <section className={`${styles.panel} ${styles.weaknessPanel}`}>
+                  <h3>Weaknesses</h3>
+                  <div className={styles.tags}>
+                    {pokemon.weaknesses.map((value) => (
+                      <span key={`weak-${value}`} className={`${styles.typeBadge} ${getTypeClassName(value)}`}>
+                        {value}
+                      </span>
+                    ))}
+                  </div>
+                </section>
               </div>
-            </section>
 
-            <section className={`${styles.panel} ${styles.weaknessPanel}`}>
-              <h3>Weaknesses</h3>
-              <div className={styles.tags}>
-                {pokemon.weaknesses.map((value) => (
-                  <span key={`weak-${value}`} className={`${styles.typeBadge} ${getTypeClassName(value)}`}>
-                    {value}
-                  </span>
-                ))}
-              </div>
-            </section>
-          </div>
-
-          <section className={styles.panel}>
-            <h3>Evolutions</h3>
-            <p className={styles.muted}>
-              Requirement:{" "}
-              {pokemon.evolutionRequirements
-                ? `${pokemon.evolutionRequirements.amount} ${pokemon.evolutionRequirements.name}`
-                : "None"}
-            </p>
-            {pokemon.evolutions && pokemon.evolutions.length > 0 ? (
-              <div className={styles.tags}>
-                {pokemon.evolutions.map((evolution) => (
-                  <button
-                    type="button"
-                    className={`${styles.linkButton} ${styles.evolutionButton}`}
-                    onClick={() => updateSearch(evolution.name)}
-                    key={evolution.id}
-                  >
-                    {evolution.name}
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <p className={styles.muted}>No further evolutions.</p>
-            )}
-          </section>
+              <section className={styles.panel}>
+                <h3>Evolutions</h3>
+                <p className={styles.muted}>
+                  Requirement:{" "}
+                  {pokemon.evolutionRequirements
+                    ? `${pokemon.evolutionRequirements.amount} ${pokemon.evolutionRequirements.name}`
+                    : "None"}
+                </p>
+                {pokemon.evolutions && pokemon.evolutions.length > 0 ? (
+                  <div className={styles.tags}>
+                    {pokemon.evolutions.map((evolution) => (
+                      <button
+                        type="button"
+                        className={`${styles.linkButton} ${styles.evolutionButton}`}
+                        onClick={() => updateSearch(evolution.name)}
+                        key={evolution.id}
+                      >
+                        {evolution.name}
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <p className={styles.muted}>No further evolutions.</p>
+                )}
+              </section>
+            </>
+          )}
         </section>
       )}
     </>
